@@ -18,7 +18,7 @@ Insert your private key into the `./key` directory. WHen connecting to EC2 on AW
 
 To start the application, use the following command:
 
-`npm start` (`this will run nodemon server.js`)
+`npm start` (this will run `nodemon server.js`)
 
 This command will start the server on port 8000.
 
