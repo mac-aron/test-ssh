@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <title>SSH Terminal</title>
+    <!-- Link to the Xterm CSS file -->
+    <link rel="stylesheet" href="/xterm.css" />
+
+    <!-- Import Xterm, Xterm fit addon and Socket.IO JavaScript files -->
+    <script src="/xterm.js"></script>
+    <script src="/xterm-addon-fit.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      // On page load, initialize Terminal, Socket.IO connection, and event handlers
+      window.addEventListener(
+        "load",
+        function () {
+          // Get terminal container DOM element
+          var terminalContainer = document.getElementById("terminal-container");
+
+          // Initialize new Xterm.js terminal instance
+          const term = new Terminal({ cursorBlink: true });
+
+          // Load FitAddon to automatically resize terminal
+          const fitAddon = new FitAddon.FitAddon();
+          term.loadAddon(fitAddon);
+          term.open(terminalContainer);
+          fitAddon.fit();
+
+          // Establish socket.io connection
+          var socket = io();
+
+          // On socket connection, write a message to terminal
+          socket.on("connect", function () {
+            term.write("\r[BACKEND] CONNECTED \r\n");
+          });
+
+          // Capture keyboard input and send to server
+          term.onKey(function (ev) {
+            socket.emit("data", ev.key);
+          });
+
+          // Receive data from server and write to terminal
+          socket.on("data", function (data) {
+            term.write(data);
+          });
+
+          // On socket disconnection, write a message to terminal
+          socket.on("disconnect", function () {
+            term.write("\r[BACKEND] DISCONNECTED\r\n");
+          });
+        },
+        false
+      );
+    </script>
+
+    <!-- Styling for the terminal and the page -->
+    <style>
+      body {
+        font-family: helvetica, sans-serif, arial;
+        font-size: 1em;
+        color: #111;
+      }
+      h1 {
+        text-align: center;
+      }
+      #terminal-container {
+        width: 960px;
+        height: 600px;
+        margin: 0 auto;
+        padding: 2px;
+      }
+      #terminal-container .terminal {
+        background-color: #111;
+        color: #fafafa;
+        padding: 2px;
+      }
+      #terminal-container .terminal:focus .terminal-cursor {
+        background-color: #fafafa;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header and terminal container -->
+    <h3>AWS EC2 SSH</h3>
+    <div id="terminal-container"></div>
+  </body>
+</html>
