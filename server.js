@@ -38,7 +38,7 @@ const SSHClient = require('ssh2').Client;
 const configuration = {
     host: "ec2-13-53-193-244.eu-north-1.compute.amazonaws.com",
     username: "ubuntu",
-    privateKey: fs.readFileSync("./lab_key.pem")
+    privateKey: fs.readFileSync("./key/lab_key.pem")
   };
 
 // Listen for new connections
